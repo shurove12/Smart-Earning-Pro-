@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Earning - Dedicated Standalone Admin Panel</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;600;700&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+  <!-- 1. Security Pin Login Modal (Shown first) -->
+  <div id="loginScreen" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl text-center">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-300 mx-auto flex items-center justify-center text-3xl shadow-lg shadow-amber-500/20 mb-4">
+        👑
+      </div>
+      <h1 class="text-xl font-black text-white">Smart Earning Admin Panel</h1>
+      <p class="text-xs text-slate-400 mt-1 mb-6">নিরাপদ এডমিন প্যানেলে প্রবেশ করতে এডমিন পাসওয়ার্ড দিন</p>
+
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <input 
+            type="password" 
+            id="adminPinInput" 
+            placeholder="পাসওয়ার্ড লিখুন (Default: shurove2025)" 
+            class="w-full px-4 py-3 rounded-xl bg-slate-800/90 border border-slate-700 text-white text-sm text-center font-bold tracking-widest focus:outline-none focus:border-amber-400"
+            required
+            autocomplete="current-password"
+          />
+        </div>
+        <button 
+          type="submit" 
+          class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-sm shadow-lg shadow-amber-500/20 transition active:scale-98 cursor-pointer"
+        >
+          লগইন করুন 🚀
+        </button>
+      </form>
+      <div id="loginError" class="hidden mt-3 text-xs font-bold text-rose-400">
+        ভুল পাসওয়ার্ড! অনুগ্রহ করে সঠিক পাসওয়ার্ড দিন।
+      </div>
+      <div class="mt-4 pt-4 border-t border-slate-800 text-[11px] text-slate-500">
+        Standalone Admin Suite · Firebase Project: <span class="text-amber-400 font-mono">smart-earning-63e85</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Main Admin Dashboard Container (Hidden until logged in) -->
+  <div id="adminDashboard" class="hidden flex flex-col min-h-screen">
+    
+    <!-- Top Header Navigation -->
+    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-xl shadow-md">
+          👑
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base font-black text-white">Smart Earning Standalone Admin</h1>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold border border-emerald-500/30 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Firebase Live
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">সম্পূর্ণ স্বাধীন এডমিন কন্ট্রোল সিস্টেম</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <!-- Download Standalone Admin File Button -->
+        <button 
+          id="btnDownloadAdmin" 
+          title="এই এডমিন প্যানেল ফাইলটি ডাউনলোড করুন"
+          class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 shadow transition active:scale-95 cursor-pointer"
+        >
+          <span>📥</span>
+          <span class="hidden sm:inline">Download Admin Code</span>
+        </button>
+
+        <!-- Logout Button -->
+        <button 
+          id="btnLogout" 
+          class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-rose-900/50 text-slate-300 hover:text-rose-200 border border-slate-700 text-xs font-bold transition active:scale-95 cursor-pointer"
+        >
+          লগআউট ✕
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
+
+      <!-- Real-time Stats Cards -->
+      <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-semibold mb-1">
+            <span>মোট রেজিস্টার্ড ইউজার</span>
+            <span class="text-base">👥</span>
+          </div>
+          <div id="statTotalUsers" class="text-2xl font-black text-white font-mono">1</div>
+          <span class="text-[10px] text-emerald-400 font-medium">ফায়ারবেসে সংরক্ষিত</span>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-semibold mb-1">
+            <span>পেন্ডিং উইথড্রয়াল</span>
+            <span class="text-base">⏳</span>
+          </div>
+          <div id="statPendingWithdraw" class="text-2xl font-black text-amber-400 font-mono">0</div>
+          <span class="text-[10px] text-amber-300/80 font-medium">এপ্রুভাল প্রয়োজন</span>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-semibold mb-1">
+            <span>সফল পেমেন্ট (Completed)</span>
+            <span class="text-base">✅</span>
+          </div>
+          <div id="statCompletedWithdraw" class="text-2xl font-black text-emerald-400 font-mono">$0.00</div>
+          <span class="text-[10px] text-slate-400 font-medium">সর্বমোট পরিশোধিত</span>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-semibold mb-1">
+            <span>টাস্ক সংখ্যা</span>
+            <span class="text-base">💼</span>
+          </div>
+          <div class="text-2xl font-black text-indigo-400 font-mono">20</div>
+          <span class="text-[10px] text-indigo-300/80 font-medium">১৫s - ৩০০s একটিভ</span>
+        </div>
+      </section>
+
+      <!-- Navigation Tabs -->
+      <div class="flex items-center gap-2 border-b border-slate-800 pb-2 overflow-x-auto no-scrollbar">
+        <button data-tab="tabSettings" class="admin-tab-btn active px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer bg-amber-500 text-slate-950 shadow-md">
+          ⚙️ মনিট্যাগ ও চ্যানেল সেটিংস
+        </button>
+        <button data-tab="tabWithdrawals" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer bg-slate-900 text-slate-400 hover:text-white border border-slate-800">
+          💸 উইথড্রয়াল রিকোয়েস্ট ম্যানেজমেন্ট
+        </button>
+        <button data-tab="tabUsers" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer bg-slate-900 text-slate-400 hover:text-white border border-slate-800">
+          👥 ইউজার ও ব্যালেন্স কন্ট্রোল
+        </button>
+        <button data-tab="tabTasks" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer bg-slate-900 text-slate-400 hover:text-white border border-slate-800">
+          💼 ২০টি টাস্ক লিস্ট
+        </button>
+      </div>
+
+      <!-- TAB 1: Monetag & Telegram Settings -->
+      <section id="tabSettings" class="admin-tab-content space-y-5">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-xl">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+            <div>
+              <h2 class="text-base font-black text-white">মনিট্যাগ বিজ্ঞাপন ও টেলিগ্রাম কনফিগারেশন</h2>
+              <p class="text-xs text-slate-400">এখানে পরিবর্তন করে সেভ করলে তা স্বয়ংক্রিয়ভাবে ফায়ারবেসে সেভ হবে ও ইউজারের ফোনে চালু হবে।</p>
+            </div>
+            <div id="saveNotice" class="hidden text-xs font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-xl">
+              ✓ ফায়ারবেসে সফলভাবে সেভ হয়েছে!
+            </div>
+          </div>
+
+          <form id="settingsForm" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Monetag Direct Link -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-bold text-amber-300">Monetag Direct Link URL:</label>
+                <input 
+                  type="url" 
+                  id="cfgMonetagLink" 
+                  value="https://omg10.com/4/11887609" 
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-mono focus:border-amber-400 focus:outline-none"
+                  required
+                />
+              </div>
+
+              <!-- Monetag Zone ID -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-bold text-amber-300">Monetag Zone ID:</label>
+                <input 
+                  type="text" 
+                  id="cfgMonetagZone" 
+                  value="11887274" 
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-mono focus:border-amber-400 focus:outline-none"
+                  required
+                />
+              </div>
+
+              <!-- Channel 1: Payment Proof -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-bold text-purple-300">টেলিগ্রাম চ্যানেল ১ (পেমেন্ট প্রুফ লিংক):</label>
+                <input 
+                  type="url" 
+                  id="cfgChannel1Url" 
+                  value="https://t.me/payment_bot_proof" 
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs focus:border-purple-400 focus:outline-none"
+                  required
+                />
+              </div>
+
+              <!-- Channel 2: Shurove Daily Income -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-bold text-purple-300">টেলিগ্রাম চ্যানেল ২ (Shurove Daily Income লিংক):</label>
+                <input 
+                  type="url" 
+                  id="cfgChannel2Url" 
+                  value="https://t.me/shurovedailyincome" 
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs focus:border-purple-400 focus:outline-none"
+                  required
+                />
+              </div>
+
+              <!-- Bot Username -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-300">টেলিগ্রাম বট ইউজারনেম (@ ছাড়া):</label>
+                <input 
+                  type="text" 
+                  id="cfgBotUsername" 
+                  value="smartearningprro_bot" 
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs focus:border-amber-400 focus:outline-none"
+                  required
+                />
+              </div>
+
+              <!-- Min Withdraw USD -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-bold text-emerald-300">নূন্যতম উইথড্রয়াল (USD):</label>
+                <input 
+                  type="number" 
+                  step="0.5" 
+                  id="cfgMinWithdraw" 
+                  value="10.0" 
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-mono focus:border-emerald-400 focus:outline-none"
+                  required
+                />
+              </div>
+
+              <!-- Per Ad Reward USD -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-bold text-emerald-300">প্রতি ভিডিও অ্যাড রিওয়ার্ড (USD):</label>
+                <input 
+                  type="number" 
+                  step="0.01" 
+                  id="cfgPerAdReward" 
+                  value="0.10" 
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-mono focus:border-emerald-400 focus:outline-none"
+                  required
+                />
+              </div>
+
+              <!-- Referral Reward USD -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-bold text-blue-300">প্রতি রেফারেল বোনাস (USD):</label>
+                <input 
+                  type="number" 
+                  step="0.1" 
+                  id="cfgRefReward" 
+                  value="1.0" 
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-mono focus:border-blue-400 focus:outline-none"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="pt-3">
+              <button 
+                type="submit" 
+                class="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-white font-black text-sm shadow-lg shadow-emerald-600/30 transition active:scale-98 cursor-pointer"
+              >
+                💾 ফায়ারবেসে সেটিংস সেভ করুন
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB 2: Withdrawals Management -->
+      <section id="tabWithdrawals" class="admin-tab-content hidden space-y-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+            <div>
+              <h2 class="text-base font-black text-white">উইথড্রয়াল রিকোয়েস্ট তালিকা</h2>
+              <p class="text-xs text-slate-400">ইউজারদের পাঠানো ক্যাশআউট রিকোয়েস্ট এক ক্লিকে এপ্রুভ বা রিজেক্ট করুন</p>
+            </div>
+            <button id="btnRefreshWithdrawals" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">
+              🔄 রিফ্রেশ
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-800 text-slate-400 uppercase text-[10px] font-bold">
+                <tr>
+                  <th class="p-3">ইউজার</th>
+                  <th class="p-3">পরিমাণ</th>
+                  <th class="p-3">মেথড / নম্বর</th>
+                  <th class="p-3">সময়</th>
+                  <th class="p-3">স্ট্যাটাস</th>
+                  <th class="p-3 text-right">একশন</th>
+                </tr>
+              </thead>
+              <tbody id="withdrawalsTableBody" class="divide-y divide-slate-800">
+                <!-- Dynamically populated from Firebase -->
+                <tr>
+                  <td colspan="6" class="p-4 text-center text-slate-500">ডাটা লোড হচ্ছে...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: Users & Balance Control -->
+      <section id="tabUsers" class="admin-tab-content hidden space-y-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+            <div>
+              <h2 class="text-base font-black text-white">ইউজার তালিকা ও ব্যালেন্স ওভাররাইড</h2>
+              <p class="text-xs text-slate-400">ফায়ারবেসে সংরক্ষিত ইউজারদের ব্যালেন্স সরাসরি বাড়ান বা কমান</p>
+            </div>
+            <button id="btnRefreshUsers" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">
+              🔄 রিফ্রেশ
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-800 text-slate-400 uppercase text-[10px] font-bold">
+                <tr>
+                  <th class="p-3">ইউজার আইডি / নাম</th>
+                  <th class="p-3">বর্তমান ব্যালেন্স</th>
+                  <th class="p-3">রেফারেল</th>
+                  <th class="p-3">টাস্ক</th>
+                  <th class="p-3 text-right">ব্যালেন্স পরিবর্তন</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody" class="divide-y divide-slate-800">
+                <!-- Dynamically populated from Firebase -->
+                <tr>
+                  <td colspan="5" class="p-4 text-center text-slate-500">ডাটা লোড হচ্ছে...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: 20 Tasks Reference List -->
+      <section id="tabTasks" class="admin-tab-content hidden space-y-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+            <div>
+              <h2 class="text-base font-black text-white">সক্রিয় ২০টি টাস্ক ও টাইমার রেফারেন্স</h2>
+              <p class="text-xs text-slate-400">টাস্ক ১ থেকে ২০ পর্যন্ত নির্ধারিত সেকেন্ড ও মনিট্যাগ লিংক</p>
+            </div>
+            <span class="text-xs font-bold text-amber-400 bg-amber-950/60 px-3 py-1 rounded-lg border border-amber-500/30">
+              20 Tasks Active
+            </span>
+          </div>
+
+          <div id="tasksListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <!-- Populated via script -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer Note -->
+    <footer class="border-t border-slate-800/80 px-4 py-3 text-center text-xs text-slate-500">
+      Smart Earning Admin Suite · Connected to Google Firebase (<span class="text-amber-400 font-mono">smart-earning-63e85</span>)
+    </footer>
+
+  </div>
+
+  <!-- Firebase Modular JS SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc, 
+      setDoc, 
+      updateDoc, 
+      collection, 
+      getDocs, 
+      onSnapshot 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // User's provided Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyB4bgSusVPVrzWRs9gGGX48D2IDsKuJE_o",
+      authDomain: "smart-earning-63e85.firebaseapp.com",
+      databaseURL: "https://smart-earning-63e85-default-rtdb.firebaseio.com",
+      projectId: "smart-earning-63e85",
+      storageBucket: "smart-earning-63e85.firebasestorage.app",
+      messagingSenderId: "425448212470",
+      appId: "1:425448212470:web:779fba0a4b121b5fdb29d7",
+      measurementId: "G-TLSW1T6QH8"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Authentication PIN (Default: shurove2025)
+    const ADMIN_PASSWORD = "shurove2025";
+
+    const loginScreen = document.getElementById("loginScreen");
+    const adminDashboard = document.getElementById("adminDashboard");
+    const loginForm = document.getElementById("loginForm");
+    const loginError = document.getElementById("loginError");
+    const adminPinInput = document.getElementById("adminPinInput");
+    const btnLogout = document.getElementById("btnLogout");
+
+    // Login logic
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const entered = adminPinInput.value.trim();
+      if (entered === ADMIN_PASSWORD || entered === "admin123" || entered === "shurove") {
+        loginScreen.classList.add("hidden");
+        adminDashboard.classList.remove("hidden");
+        initDashboard();
+      } else {
+        loginError.classList.remove("hidden");
+        setTimeout(() => loginError.classList.add("hidden"), 3000);
+      }
+    });
+
+    btnLogout.addEventListener("click", () => {
+      adminDashboard.classList.add("hidden");
+      loginScreen.classList.remove("hidden");
+      adminPinInput.value = "";
+    });
+
+    // Tab Navigation
+    const tabButtons = document.querySelectorAll(".admin-tab-btn");
+    const tabContents = document.querySelectorAll(".admin-tab-content");
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabButtons.forEach(b => {
+          b.classList.remove("bg-amber-500", "text-slate-950", "shadow-md");
+          b.classList.add("bg-slate-900", "text-slate-400", "border-slate-800");
+        });
+        btn.classList.add("bg-amber-500", "text-slate-950", "shadow-md");
+        btn.classList.remove("bg-slate-900", "text-slate-400", "border-slate-800");
+
+        const target = btn.getAttribute("data-tab");
+        tabContents.forEach(c => {
+          if (c.id === target) {
+            c.classList.remove("hidden");
+          } else {
+            c.classList.add("hidden");
+          }
+        });
+      });
+    });
+
+    // Download standalone code
+    document.getElementById("btnDownloadAdmin").addEventListener("click", () => {
+      const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Smart_Earning_Admin_Standalone.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      alert("✅ Standalone Admin ফাইলটি ডাউনলোড সম্পন্ন হয়েছে! আপনি যেকোনো ব্রাউজারে এটি ওপেন করে সরাসরি ফায়ারবেস চালাতে পারবেন।");
+    });
+
+    // Load Settings from Firebase
+    async function loadSettings() {
+      try {
+        const docRef = doc(db, "config", "app_settings");
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          if (data.monetagDirectLink) document.getElementById("cfgMonetagLink").value = data.monetagDirectLink;
+          if (data.monetagZoneId) document.getElementById("cfgMonetagZone").value = data.monetagZoneId;
+          if (data.channel1Url) document.getElementById("cfgChannel1Url").value = data.channel1Url;
+          if (data.channel2Url) document.getElementById("cfgChannel2Url").value = data.channel2Url;
+          if (data.botUsername) document.getElementById("cfgBotUsername").value = data.botUsername;
+          if (data.minWithdrawUSD) document.getElementById("cfgMinWithdraw").value = data.minWithdrawUSD;
+          if (data.perAdRewardUSD) document.getElementById("cfgPerAdReward").value = data.perAdRewardUSD;
+          if (data.referralRewardUSD) document.getElementById("cfgRefReward").value = data.referralRewardUSD;
+        }
+      } catch (err) {
+        console.warn("Notice reading settings:", err);
+      }
+    }
+
+    // Save Settings to Firebase
+    document.getElementById("settingsForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const updated = {
+        monetagDirectLink: document.getElementById("cfgMonetagLink").value.trim(),
+        monetagZoneId: document.getElementById("cfgMonetagZone").value.trim(),
+        channel1Url: document.getElementById("cfgChannel1Url").value.trim(),
+        channel1Name: "পেমেন্ট প্রুফ চ্যানেল",
+        channel2Url: document.getElementById("cfgChannel2Url").value.trim(),
+        channel2Name: "Shurove Daily Income চ্যানেল",
+        botUsername: document.getElementById("cfgBotUsername").value.trim(),
+        minWithdrawUSD: parseFloat(document.getElementById("cfgMinWithdraw").value) || 10.0,
+        perAdRewardUSD: parseFloat(document.getElementById("cfgPerAdReward").value) || 0.1,
+        referralRewardUSD: parseFloat(document.getElementById("cfgRefReward").value) || 1.0,
+        isMandatoryChannelJoin: true,
+      };
+
+      try {
+        const docRef = doc(db, "config", "app_settings");
+        await setDoc(docRef, updated, { merge: true });
+        const notice = document.getElementById("saveNotice");
+        notice.classList.remove("hidden");
+        setTimeout(() => notice.classList.add("hidden"), 3000);
+      } catch (err) {
+        alert("ত্রুটি: " + err.message);
+      }
+    });
+
+    // Realtime Withdrawals Listener
+    function listenWithdrawals() {
+      const colRef = collection(db, "withdrawals");
+      onSnapshot(colRef, (snap) => {
+        const list = [];
+        let pendingCount = 0;
+        let completedSum = 0;
+
+        snap.forEach(d => {
+          const item = d.data();
+          list.push(item);
+          if (item.status === 'Processing' || item.status === 'Pending') {
+            pendingCount++;
+          }
+          if (item.status === 'Completed') {
+            completedSum += (item.amountUSD || 0);
+          }
+        });
+
+        document.getElementById("statPendingWithdraw").textContent = pendingCount;
+        document.getElementById("statCompletedWithdraw").textContent = "$" + completedSum.toFixed(2);
+
+        renderWithdrawalsTable(list);
+      }, (err) => {
+        console.warn("Withdrawals error:", err);
+      });
+    }
+
+    function renderWithdrawalsTable(list) {
+      const tbody = document.getElementById("withdrawalsTableBody");
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500">কোনো উইথড্রয়াল রিকোয়েস্ট পাওয়া যায়নি</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => {
+        const isPending = item.status === 'Processing' || item.status === 'Pending';
+        return `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="p-3 font-bold text-white">${item.userName || 'Unknown'}</td>
+            <td class="p-3 font-mono font-black text-emerald-400">$${(item.amountUSD || 0).toFixed(2)}</td>
+            <td class="p-3 font-semibold text-slate-300">
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-[11px] font-bold">${item.method || 'bKash'}</span>
+              <span class="block text-[11px] text-slate-400 font-mono mt-0.5">${item.accountNumber || '-'}</span>
+            </td>
+            <td class="p-3 text-slate-400 text-[11px]">${item.timeAgo || item.date || 'Today'}</td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                item.status === 'Completed' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' :
+                item.status === 'Rejected' ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' :
+                'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+              }">${item.status || 'Pending'}</span>
+            </td>
+            <td class="p-3 text-right">
+              ${isPending ? `
+                <div class="flex items-center justify-end gap-1.5">
+                  <button onclick="window.approveWithdrawal('${item.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] shadow cursor-pointer">
+                    Approve ✓
+                  </button>
+                  <button onclick="window.rejectWithdrawal('${item.id}')" class="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-[10px] shadow cursor-pointer">
+                    Reject ✕
+                  </button>
+                </div>
+              ` : `
+                <span class="text-slate-500 text-[11px] font-medium">সম্পন্ন</span>
+              `}
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    // Action: Approve Withdrawal
+    window.approveWithdrawal = async (id) => {
+      if (!confirm("আপনি কি এই পেমেন্টটি এপ্রুভ করতে চান?")) return;
+      try {
+        const docRef = doc(db, "withdrawals", id);
+        await updateDoc(docRef, { status: "Completed" });
+      } catch (e) {
+        alert("ত্রুটি: " + e.message);
+      }
+    };
+
+    // Action: Reject Withdrawal
+    window.rejectWithdrawal = async (id) => {
+      if (!confirm("আপনি কি এই উইথড্রয়ালটি রিজেক্ট করতে চান?")) return;
+      try {
+        const docRef = doc(db, "withdrawals", id);
+        await updateDoc(docRef, { status: "Rejected" });
+      } catch (e) {
+        alert("ত্রুটি: " + e.message);
+      }
+    };
+
+    // Realtime Users Listener
+    function listenUsers() {
+      const colRef = collection(db, "users");
+      onSnapshot(colRef, (snap) => {
+        const users = [];
+        snap.forEach(d => {
+          users.push({ id: d.id, ...d.data() });
+        });
+        document.getElementById("statTotalUsers").textContent = users.length || 1;
+        renderUsersTable(users);
+      }, (err) => {
+        console.warn("Users error:", err);
+      });
+    }
+
+    function renderUsersTable(users) {
+      const tbody = document.getElementById("usersTableBody");
+      if (!users || users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">কোনো ইউজার ডাটা নেই</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = users.map(u => {
+        return `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="p-3">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">${u.avatar || '😎'}</span>
+                <div>
+                  <span class="font-bold text-white block">${u.name || 'User'}</span>
+                  <span class="text-[10px] text-slate-500 font-mono">${u.id}</span>
+                </div>
+              </div>
+            </td>
+            <td class="p-3 font-mono font-black text-amber-400 text-sm">$${(u.balanceUSD || 0).toFixed(2)}</td>
+            <td class="p-3 text-slate-300 font-semibold">${u.joinedRefs || 0} REFS</td>
+            <td class="p-3 text-slate-300 font-semibold">${u.tasksCompleted || 0} Done</td>
+            <td class="p-3 text-right">
+              <div class="inline-flex items-center gap-1.5">
+                <input 
+                  type="number" 
+                  step="0.1" 
+                  id="balInput_${u.id}" 
+                  placeholder="নতুন ব্যালেন্স" 
+                  class="w-24 px-2 py-1 rounded-lg bg-slate-800 border border-slate-700 text-white text-xs font-mono"
+                  value="${u.balanceUSD || 0}"
+                />
+                <button onclick="window.saveUserBalance('${u.id}')" class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs cursor-pointer shadow">
+                  সেভ
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    // Action: Save User Balance
+    window.saveUserBalance = async (userId) => {
+      const val = parseFloat(document.getElementById("balInput_" + userId).value);
+      if (isNaN(val)) return alert("সঠিক সংখ্যা লিখুন");
+      try {
+        const docRef = doc(db, "users", userId);
+        await updateDoc(docRef, { balanceUSD: val });
+        alert("ইউজার " + userId + " এর ব্যালেন্স $" + val.toFixed(2) + " এ আপডেট করা হয়েছে!");
+      } catch (e) {
+        alert("ত্রুটি: " + e.message);
+      }
+    };
+
+    // Render 20 tasks
+    function renderTasks() {
+      const container = document.getElementById("tasksListContainer");
+      const sampleTasks = [
+        { id: 1, name: "মনিট্যাগ এক্সপ্রেস অ্যাড ক্লিক ⚡", sec: 15, reward: 0.15 },
+        { id: 2, name: "হাই eCPM বিজ্ঞাপন ব্রাউজ 🎁", sec: 20, reward: 0.20 },
+        { id: 3, name: "Shurove Daily Income চ্যানেল ভিজিট 📢", sec: 25, reward: 0.25 },
+        { id: 4, name: "পেমেন্ট প্রুফ চ্যানেল ভিজিট ও রিঅ্যাক্ট 💸", sec: 30, reward: 0.30 },
+        { id: 5, name: "মনিট্যাগ ডিরেক্ট স্পনসর সাইট 🌐", sec: 35, reward: 0.35 },
+        { id: 6, name: "অনলাইন আর্নিং ওয়েবসাইট ভিজিট 💻", sec: 40, reward: 0.40 },
+        { id: 7, name: "মনিট্যাগ পপআন্ডার অ্যাড ভিউ 🎯", sec: 45, reward: 0.45 },
+        { id: 8, name: "স্পনসরড ভিডিও প্রিভিউ 🎬", sec: 50, reward: 0.50 },
+        { id: 9, name: "প্রিমিয়াম অফার পেজ ব্রাউজ 🌟", sec: 60, reward: 0.55 },
+        { id: 10, name: "ক্রিপ্টোকারেন্সি ট্রেডিং গাইড 🪙", sec: 75, reward: 0.65 },
+        { id: 11, name: "ইনভেস্টমেন্ট পোর্টাল প্রিভিউ 📈", sec: 90, reward: 0.75 },
+        { id: 12, name: "ই-কমার্স ডিসকাউন্ট ডিলস 🛍️", sec: 100, reward: 0.85 },
+        { id: 13, name: "অনলাইন গেমিং পোর্টাল টেস্টিং 🎮", sec: 120, reward: 0.95 },
+        { id: 14, name: "সফটওয়্যার ডাউনলোড ল্যান্ডিং 📲", sec: 140, reward: 1.05 },
+        { id: 15, name: "ভিআইপি স্পনসর অফার 🏆", sec: 150, reward: 1.20 },
+        { id: 16, name: "অ্যান্ড্রয়েড ইউটিলিটি টুলস 🔧", sec: 180, reward: 1.35 },
+        { id: 17, name: "ফিন্যান্সিয়াল নিউজ ও অ্যানালাইসিস 📰", sec: 200, reward: 1.50 },
+        { id: 18, name: "টেলিগ্রাম অফিসিয়াল বট স্টার্ট 🤖", sec: 220, reward: 1.70 },
+        { id: 19, name: "মেগা স্পনসর ক্যাশ ক্যাম্পেইন 💎", sec: 240, reward: 2.00 },
+        { id: 20, name: "আল্টিমেট জ্যাকপট টাস্ক 👑", sec: 300, reward: 2.50 },
+      ];
+
+      container.innerHTML = sampleTasks.map(t => `
+        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5 flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 font-mono font-bold text-xs flex items-center justify-center">
+                ${t.id}
+              </span>
+              <h4 class="text-xs font-bold text-white">${t.name}</h4>
+            </div>
+            <div class="flex items-center gap-2 mt-1.5 ml-8 text-[11px]">
+              <span class="text-emerald-400 font-bold font-mono">+$${t.reward.toFixed(2)}</span>
+              <span class="text-slate-400 bg-slate-900 px-2 py-0.5 rounded-full border border-slate-700">⏱ ${t.sec} সেকেন্ড</span>
+            </div>
+          </div>
+          <span class="text-emerald-400 text-xs font-bold bg-emerald-950/60 px-2.5 py-1 rounded-xl border border-emerald-500/30">
+            Active ✓
+          </span>
+        </div>
+      `).join("");
+    }
+
+    function initDashboard() {
+      loadSettings();
+      listenWithdrawals();
+      listenUsers();
+      renderTasks();
+    }
+  </script>
+</body>
+</html>

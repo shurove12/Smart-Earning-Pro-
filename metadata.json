@@ -1,0 +1,6 @@
+{
+  "name": "Smart Earning - Mini App",
+  "description": "Smart Earning interactive Telegram Web App with tasks, video ads, referrals, leaderboard ranking, and instant mobile wallet withdrawals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

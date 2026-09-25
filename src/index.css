@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Custom Gradients and Animations matching screenshots */
+.gradient-purple {
+  background: linear-gradient(135deg, #7928CA 0%, #4A00E0 100%);
+}
+
+.gradient-hero-card {
+  background: linear-gradient(135deg, #8A2BE2 0%, #5E17EB 50%, #4A00E0 100%);
+}
+
+.gradient-magenta {
+  background: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%);
+}
+
+.gradient-yellow {
+  background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
+}
+
+.gradient-blue {
+  background: linear-gradient(135deg, #00C6FF 0%, #0072FF 100%);
+}
+
+.gradient-nav {
+  background: linear-gradient(180deg, #1877F2 0%, #0D5AC4 100%);
+}
+
+.text-gold-shadow {
+  text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+}
+
+/* Subtle scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(150, 150, 150, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(150, 150, 150, 0.5);
+}

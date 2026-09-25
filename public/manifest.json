@@ -1,0 +1,20 @@
+{
+  "id": "/",
+  "name": "📱 Smart Earning Pro 💸",
+  "short_name": "SmartEarnPro",
+  "description": "📱 Smart Earning Pro 💸 - Interactive earning app with tasks, Monetag video ads, referrals, leaderboard, and instant mobile wallet withdrawals.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#4c1d95",
+  "theme_color": "#7e22ce",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
